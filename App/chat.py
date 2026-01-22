@@ -8,10 +8,10 @@ from rag.generator import generate_answer
 load_dotenv()
 
 # Configuration de la page
-st.set_page_config(page_title="Assistant IA TechCorp", page_icon="")
+st.set_page_config(page_title="🤖 Assistant RH TechCorp", page_icon="")
 
-st.title(" Assistant RH TechCorp")
-st.markdown("Objectif : **Fiabilité et Transparence documentaire.**")
+st.title(" 🤖 Assistant RH TechCorp")
+st.markdown("Bienvenue, comment puis-je vous aider aujourd'hui ?")
 
 # Initialisation de l'historique
 if "messages" not in st.session_state:
@@ -23,7 +23,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Zone de saisie
-if prompt := st.chat_input("Ex: Quel est le budget formation ?"):
+if prompt := st.chat_input("Votre message..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)

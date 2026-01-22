@@ -11,5 +11,5 @@ def create_and_save_store(chunks):
     
     # Sauvegarde locale pour rendre chaque réponse traçable [cite: 67]
     vectorstore.save_local("faiss_index")
-    print("✅ Mémoire (Base vectorielle) sauvegardée dans 'faiss_index'.")
+    print("Mémoire (Base vectorielle) sauvegardée dans 'faiss_index'.")
     return vectorstore

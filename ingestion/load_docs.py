@@ -10,5 +10,5 @@ def load_professional_docs(directory_path):
     for doc in docs:
         doc.page_content = doc.page_content.replace('\n', ' ').strip()
         
-    print(f"✅ {len(docs)} pages chargées.")
+    print(f" {len(docs)} pages chargées.")
     return docs
