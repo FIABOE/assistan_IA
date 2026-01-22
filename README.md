@@ -18,73 +18,61 @@ Base Vectorielle : ChromaDB pour le stockage des embeddings générés par Huggi
 
 Modèle de Langage (LLM) : Llama 3.1 hébergé sur l'infrastructure Groq pour une génération haute performance.
 
-Structure du Répertoire
-Plaintext
+Prérequis Système
+Avant de commencer, assurez-vous d'avoir installé :
 
-#Assistant IA Métier - (RAG)
+Python 3.9 ou une version supérieure.
+Git (pour cloner le projet).
+Un compte sur Groq Cloud pour obtenir une clé API.https://console.groq.com/home
+GROQ_API_KEY=votre_cle_api
 
-[![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)](https://www.python.org/) 
-[![Streamlit](https://img.shields.io/badge/Streamlit-True-orange?logo=streamlit)](https://streamlit.io/) 
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
----
+Cloner le repository :
+git clone https://github.com/------/Assistant_IA.git
+cd Assistant_IA
 
-##Présentation du Projet
-Ce projet est un **Proof of Concept (POC)** d'un assistant conversationnel basé sur **RAG (Retrieval-Augmented Generation)**.  
-Il permet aux collaborateurs d'interroger la base de connaissances interne (procédures, guides, politiques RH) de manière **intuitive, rapide et sécurisée**.
+Créer un environnement virtuel :
+python -m venv env
+env\Scripts\activate
 
----
+Installation des dépendances :
+pip install -r requirements.txt
 
-##Architecture Technique
-- **Extraction & Découpage** : `PyPDFLoader` + `RecursiveCharacterTextSplitter` (chunks de 1500 caractères)  
-- **Base Vectorielle** : `ChromaDB` avec embeddings `HuggingFace` (`all-MiniLM-L6-v2`)  
-- **Modèle de Langage (LLM)** : `Llama 3.1` via l'API **Groq**  
-- **Interface Utilisateur** : `Streamlit` pour un accès simple et interactif  
-
----
 
 Structure du Répertoire
 plaintext
 Assistant_IA/
-├── app/
-│   └── chat.py            # Interface utilisateur (Streamlit)
+├── app/                   # Interface utilisateur Streamlit
+│   └── chat.py
+├── chroma_db/             # Base de données vectorielle (générée)    
+├── ingestion/             # Nouveau package d'ingestion
+│   ├── __init__.py
+│   ├── embed_store.py      # Création des vecteurs et stockage  
+│   ├── chunking.py         # Découpage du texte
+│   └── load_docs.py        # Chargement des PDF        # Interface utilisateur (Streamlit)
 ├── rag/
+    ├── __init__.py
 │   ├── retriever.py       # Moteur de recherche vectorielle
 │   └── generator.py       # Logique de génération (Groq API)
 ├── Data/
 │   └── Documents/         # Sources PDF
+├── .env                   
 ├── .gitignore/
-│   └── .env               # Exclusion des fichiers sensibles
-            
+│   └── .env               # Exclusion des fichiers sensibles          
 ├── .env.example           # Modèle de configuration des clés API
 └── requirements.txt       # Dépendances Python
 
-Installation
-
-Installation des dépendances :
-
-Bash
-
-pip install -r requirements.txt
-Configuration : Créer un fichier .env à la racine avec la variable suivante :
-
-Plaintext
-
-GROQ_API_KEY=votre_cle_api
-
+Lancer  la génération de la base vectorielle :
+python ingestion/embed_store.py
 
 Exécution :
-streamlit run app/chat.py
+python -m streamlit run app/chat.py
 
 
-Cloner le repository :
+Dépannage (FAQ)
+Erreur ModuleNotFoundError : Vérifiez que vous avez bien activé l'environnement virtuel et lancé pip install.
 
-git clone https://github.com/FIABOE/Assistant_IA.git
-cd Assistant_IA
-Créer un environnement virtuel :
-python -m venv env
+L'assistant dit qu'il ne trouve pas de source : Assurez-vous d'avoir lancé python ingestion/embed_store.py après avoir ajouté des PDF dans le dossier Data/Documents/.
 
-# Windows
-env\Scripts\activate
-
+Erreur de clé API : Vérifiez que le fichier .env est correctement nommé et que la clé Groq commence bien par gsk_.
 
