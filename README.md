@@ -60,10 +60,11 @@ Assistant_IA/
 ├── .gitignore/
 │   └── .env               # Exclusion des fichiers sensibles          
 ├── .env.example           # Modèle de configuration des clés API
+├── main.py                #Chaîne de Traitement des Données
 └── requirements.txt       # Dépendances Python
 
 Lancer  la génération de la base vectorielle :
-python ingestion/embed_store.py
+python main.py
 
 Exécution :
 python -m streamlit run app/chat.py

@@ -1,15 +1,24 @@
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
 import os
+import shutil
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 
-def create_and_save_store(chunks):
-    # Transformer chaque chunk en vecteur [cite: 53]
-    embeddings = OpenAIEmbeddings()
+def create_and_save_store(chunks, path_chroma):
+    print("--- Étape 3 : Création des vecteurs et stockage ---")
     
-    # Stocker le texte, le vecteur et la source [cite: 60, 61, 62, 63]
-    vectorstore = FAISS.from_documents(chunks, embeddings)
+    # Nettoyage de l'ancienne base pour éviter les doublons
+    if os.path.exists(path_chroma):
+        shutil.rmtree(path_chroma)
     
-    # Sauvegarde locale pour rendre chaque réponse traçable [cite: 67]
-    vectorstore.save_local("faiss_index")
-    print("Mémoire (Base vectorielle) sauvegardée dans 'faiss_index'.")
+    # Modèle d'embeddings gratuit et performant
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    
+    # Création de la base Chroma
+    vectorstore = Chroma.from_documents(
+        documents=chunks, 
+        embedding=embeddings, 
+        persist_directory=path_chroma
+    )
+    
+    print(f" Base vectorielle sauvegardée dans : {path_chroma}")
     return vectorstore

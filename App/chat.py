@@ -8,7 +8,7 @@ from rag.generator import generate_answer
 load_dotenv()
 
 # Configuration de la page
-st.set_page_config(page_title="🤖 Assistant RH TechCorp", page_icon="")
+st.set_page_config(page_title="🤖 Assistant RH TechCorp", page_icon="🤖")
 
 st.title(" 🤖 Assistant RH TechCorp")
 st.markdown("Bienvenue, comment puis-je vous aider aujourd'hui ?")
@@ -39,35 +39,36 @@ if prompt := st.chat_input("Votre message..."):
                 st.markdown(reponse)
                 
                 # --- 3. AFFICHAGE CONDITIONNEL DES SOURCES ---
-                # On définit les mots qui indiquent que l'IA n'a pas trouvé d'info
                 mots_cles_refus = ["désolé", "ne sais pas", "pas trouvé", "pas de mention", "aucun document"]
                 
-                # Si l'IA a trouvé une vraie réponse (pas de refus dans le texte)
                 if not any(mot in reponse.lower() for mot in mots_cles_refus):
                     if chunks:
-                        with st.expander("📄 Vérifier les sources et télécharger les PDF"):
+                        with st.expander("📄 Vérifier les sources et télécharger les documents"):
                             st.write("Documents utilisés pour cette réponse :")
                             
                             for i, doc in enumerate(chunks):
                                 file_path = doc.metadata.get('source')
-                                nom_fichier = os.path.basename(file_path)
-                                page = doc.metadata.get('page', '?')
+                                if file_path and os.path.exists(file_path):
+                                    nom_fichier = os.path.basename(file_path)
+                                    page = doc.metadata.get('page', '?')
+                                    
+                                    # Détection dynamique du type de fichier
+                                    extension = os.path.splitext(nom_fichier)[1].lower()
+                                    type_mime = "application/pdf" if extension == ".pdf" else "text/plain"
 
-                                st.info(f"**Source {i+1}:** {nom_fichier} (Page {page})")
-                                st.caption(f"Extrait : {doc.page_content[:150]}...")
+                                    st.info(f"**Source {i+1}:** {nom_fichier} (Page {page})")
+                                    st.caption(f"Extrait : {doc.page_content[:150]}...")
 
-                                if os.path.exists(file_path):
                                     with open(file_path, "rb") as f:
                                         st.download_button(
                                             label=f"📥 Télécharger {nom_fichier}",
                                             data=f,
                                             file_name=nom_fichier,
-                                            mime="application/pdf",
+                                            mime=type_mime,
                                             key=f"dl_{i}_{nom_fichier}"
                                         )
-                                st.divider()
+                                    st.divider()
                 else:
-                    # Si l'IA n'a pas trouvé, on affiche juste une petite note discrète
                     st.warning("⚠️ Aucune source officielle n'a été trouvée pour cette demande.")
 
             except Exception as e:

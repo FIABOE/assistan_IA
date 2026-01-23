@@ -3,8 +3,11 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
 def get_relevant_chunks(query):
-    # Chemin vers la base de données locale
-    chemin_chroma = r"D:\Bachelor3 DATA IA\Projet IA\Assistant_IA\chroma_db"
+    # --- SOLUTION : CHEMIN RELATIF ---
+    # On récupère le dossier où se trouve le projet actuel
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # On pointe vers le dossier chroma_db à la racine du projet
+    chemin_chroma = os.path.join(BASE_DIR, "chroma_db")
     
     # Configuration du modèle de recherche 
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -16,7 +19,7 @@ def get_relevant_chunks(query):
             embedding_function=embeddings
         )
         
-        # k=5  valeurs proches de la question posée
+        # k=5 : on récupère les 5 meilleurs extraits
         search_results = vectorstore.similarity_search(query, k=5)
         
         return search_results
